@@ -1,0 +1,48 @@
+-- To get the Table Name: "ECommerce_Products"
+-- SELECT table_name 
+-- FROM information_schema.tables 
+-- WHERE table_schema = 'public';
+
+-- To get the Columns in table
+-- SELECT column_name
+-- FROM information_schema.columns
+-- WHERE table_name = 'ECommerce_Products';
+
+
+-- Extract Specific Columns
+SELECT name,price,id FROM public."ECommerce_Products";
+
+-- Change Column Names
+SELECT id AS product_id, is_sale AS on_sale from "ECommerce_Products";
+
+-- Filter out specific details
+SELECT * FROM "ECommerce_Products" WHERE id = 5;
+SELECT * FROM "ECommerce_Products" WHERE inventory = 1;
+SELECT * FROM "ECommerce_Products" WHERE name = 'TV';
+-- Not Equal to Operator
+SELECT * FROM "ECommerce_Products" WHERE inventory <> 0; 
+SELECT * FROM "ECommerce_Products" WHERE inventory > 0 AND price <= 10000;
+SELECT * FROM "ECommerce_Products" WHERE id IN (1,2,3);
+-- String Matching based where 'TV%' means any string starting with TV and anything thereafter
+SELECT * FROM "ECommerce_Products" WHERE name LIKE 'TV%';
+SELECT * FROM "ECommerce_Products" WHERE name NOT LIKE 'TV%';
+SELECT * FROM "ECommerce_Products" WHERE name LIKE '%en%';
+-- Sort By Ascnding Order
+SELECT * FROM "ECommerce_Products" ORDER BY price;
+SELECT * FROM "ECommerce_Products" ORDER BY price DESC;
+-- Inventory sorted by Descending Order and if tie then sort in ascending order of price
+SELECT * FROM "ECommerce_Products" ORDER BY inventory DESC, price ASC;
+-- Get Recently added item if tied then sort by Price
+SELECT * FROM "ECommerce_Products" ORDER BY time DESC;
+-- Limit the number of outputs
+SELECT * FROM "ECommerce_Products" WHERE price > 100 LIMIT 6;
+-- OFFEST 3 means skipping first 3 columsn
+SELECT * FROM "ECommerce_Products" ORDER BY id ASC LIMIT 5 OFFSET 3;
+-- Add New entries
+INSERT INTO "ECommerce_Products" (name, price, id,inventory) VALUES ('Bike',300000, 13, 25),('RM-21',20000,14,23);
+-- Delete a product and return the element
+DELETE FROM "ECommerce_Products" WHERE id = 9 RETURNING *;
+DELETE FROM "ECommerce_Products" WHERE inventory = 0
+
+-- Update any entry
+UPDATE "ECommerce_Products" SET price = 20000000, is_sale = true WHERE id = 14 RETURNING *;
