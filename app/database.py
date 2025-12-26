@@ -11,7 +11,7 @@ encoded_password = quote(settings.database_password)
 #     f"@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
 # )
 
-SQLALCHEMY_DATABASE_URL=settings.SQLALCHEMY_DATABASE_URL
+SQLALCHEMY_DATABASE_URL=settings.sqlalchemy_database_url
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
