@@ -34,8 +34,8 @@ async def create_post(post: Schemas.Post,db: Session = Depends(get_db),current_u
     db.refresh(new_post)
     return new_post
 
-@router.get('/latest',response_model = Schemas.PostResponse)
-async def get_latest_post(db: Session = Depends(get_db),status_code=status.HTTP_200_OK,current_user:int = Depends(oauth2.get_current_user)):
+@router.get('/latest',response_model = Schemas.PostResponse,status_code=status.HTTP_200_OK)
+async def get_latest_post(db: Session = Depends(get_db),current_user:int = Depends(oauth2.get_current_user)):
     latest_post_query = db.query(models.Post).order_by(models.Post.id.desc())
     if not latest_post_query.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Post not found")
@@ -43,8 +43,8 @@ async def get_latest_post(db: Session = Depends(get_db),status_code=status.HTTP_
         latest_post = latest_post_query.first()
         return latest_post
 
-@router.get('/{id}',response_model = Schemas.PostVote) # initially Schemas.PostResponse
-async def get_post(id: int, response: Response,db: Session = Depends(get_db),status_code=status.HTTP_200_OK,current_user:int = Depends(oauth2.get_current_user)):
+@router.get('/{id}',response_model = Schemas.PostVote,status_code=status.HTTP_200_OK) # initially Schemas.PostResponse
+async def get_post(id: int, response: Response,db: Session = Depends(get_db),current_user:int = Depends(oauth2.get_current_user)):
     # post = db.query(models.Post).filter(models.Post.id == id).first()
     post = db.query(models.Post, func.count(models.Vote.user_id).label("votes")).join(models.Vote, models.Post.id == models.Vote.post_id, isouter=True).group_by(models.Post.id).filter(models.Post.id == id).first()
     post_obj = {"post": post[0],"votes": post[1]}
@@ -54,7 +54,7 @@ async def get_post(id: int, response: Response,db: Session = Depends(get_db),sta
         return post_obj
 
 @router.delete('/{id}',status_code=status.HTTP_204_NO_CONTENT)
-async def delete_post(id: int,db: Session = Depends(get_db),status_code=status.HTTP_204_NO_CONTENT,current_user:int = Depends(oauth2.get_current_user)):
+async def delete_post(id: int,db: Session = Depends(get_db),current_user:int = Depends(oauth2.get_current_user)):
     post_query = db.query(models.Post).filter(models.Post.id == id)
     post = post_query.first()
     if not post:
@@ -67,7 +67,7 @@ async def delete_post(id: int,db: Session = Depends(get_db),status_code=status.H
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.put('/{id}',status_code=status.HTTP_202_ACCEPTED,response_model = Schemas.PostResponse)
-async def update_post(id: int,post: Schemas.Post,db: Session = Depends(get_db),status_code=status.HTTP_202_ACCEPTED,current_user:int = Depends(oauth2.get_current_user)):
+async def update_post(id: int,post: Schemas.Post,db: Session = Depends(get_db),current_user:int = Depends(oauth2.get_current_user)):
     update_post_query = db.query(models.Post).filter(models.Post.id == id)
     if not update_post_query.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Post not found")
