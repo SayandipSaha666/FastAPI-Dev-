@@ -6,10 +6,12 @@ from urllib.parse import quote
 
 encoded_password = quote(settings.database_password)
 
-SQLALCHEMY_DATABASE_URL = (
-    f"postgresql://{settings.database_username}:{encoded_password}"
-    f"@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
-)
+# SQLALCHEMY_DATABASE_URL = (
+#     f"postgresql://{settings.database_username}:{encoded_password}"
+#     f"@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
+# )
+
+SQLALCHEMY_DATABASE_URL=settings.SQLALCHEMY_DATABASE_URL
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
